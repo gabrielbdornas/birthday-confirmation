@@ -7,7 +7,9 @@ from supabase_conection import get_total_confirmed_people
 def send_email(total_people):
     # Email details
     subject = "Confirmações Aniversário 40 anos!"
-    body = f"Total de pessoas confirmadas: {total_people}"
+    body = f"""
+    Total de pessoas confirmadas: {total_people}
+    """
     msg = MIMEText(body)
     msg["Subject"] = subject
     msg["From"] = os.environ.get("EMAIL_USER")
@@ -28,6 +30,5 @@ def send_email(total_people):
 if __name__ == "__main__":
     # Get total confirmed attendees
     total_people = get_total_confirmed_people()
-
     # Send email
     send_email(total_people)
