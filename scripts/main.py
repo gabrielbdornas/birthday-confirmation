@@ -21,7 +21,10 @@ def main():
         person_names.append(name)
 
     # Submit button
-    if st.button("Enviar"):
+    submitted = st.button("Enviar")
+
+    # Handle form submission
+    if submitted:
         if not sponsor_name.strip():
             st.error("Por favor, preencha seu nome.")
         elif any(not name.strip() for name in person_names):
