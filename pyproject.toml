@@ -1,0 +1,2 @@
+[tool.taskipy.tasks]
+server = { cmd = "streamlit run scripts/main.py", help = "Runs streamlit server." }

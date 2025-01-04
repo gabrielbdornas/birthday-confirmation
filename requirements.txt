@@ -2,3 +2,4 @@ ipdb==0.13.13
 streamlit==1.27.0
 python-dotenv==1.0.1
 supabase==2.11.0
+taskipy==1.14.1
