@@ -1,5 +1,10 @@
 import streamlit as st
-from supabase_conection import init_supabase, save_to_supabase
+from scripts.env_vars import ENV
+
+if ENV == 'DEV':
+    from scripts.sqlite_connection import save_to_sqlite as save_to_db
+elif ENV == 'PROD':
+    from scripts.supabase_conection import save_to_supabase as save_to_db
 
 def remove_streamlit_hamburguer():
     hide_streamlit_style = """
@@ -25,19 +30,17 @@ def main():
 
     st.write(f"**Confirme presença nesta festança**")
 
-    supabase = init_supabase()
-
     # Sponsor's name
     sponsor_name = st.text_input("Convidado:", placeholder="Preencha seu nome!", key="sponsor_name")
 
     # Number of people
-    acompanhantes = st.number_input("Convidado(s) Acompanhante(s):", min_value=0, step=1, key="acompanhantes")
+    companions_total = st.number_input("Convidado(s) Acompanhante(s):", min_value=0, step=1, key="companions_total")
 
     # Dynamic fields for names based on the number of people
-    person_names = []
-    for i in range(acompanhantes):
+    companions = []
+    for i in range(companions_total):
         name = st.text_input(f"Nome do {i + 1}° acompanhante:", placeholder=f"Nome da {i + 1}° acompanhante", key=f"person_{i}")
-        person_names.append(name)
+        companions.append(name)
 
     # Submit button
     submitted = st.button("Enviar")
@@ -46,15 +49,18 @@ def main():
     if submitted:
         if not sponsor_name.strip():
             st.error("Por favor, preencha seu nome.")
-        elif any(not name.strip() for name in person_names):
+        elif any(not name.strip() for name in companions):
             st.error("Por favor, preencha todos os nomes.")
         else:
-            if save_to_supabase(supabase, st, sponsor_name, acompanhantes, person_names):
+            total = companions_total + 1
+            if save_to_db(st, sponsor_name, companions, total):
+
                 st.success(f"Obrigado pela sua confirmação {sponsor_name}!")
-                if acompanhantes > 0:
+                if companions_total > 0:
                     st.write(f"**Acompanhantes:**")
-                    for i, name in enumerate(person_names, start=1):
+                    for i, name in enumerate(companions, start=1):
                         st.success(f"{i}. {name}")
+        breakpoint()
 
 if __name__ == "__main__":
     main()

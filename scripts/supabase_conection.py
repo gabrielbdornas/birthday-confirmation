@@ -1,21 +1,15 @@
 from supabase import create_client, Client
-import os
-from dotenv import load_dotenv
+from env_vars import SUPABASE_URL, SUPABASE_KEY
 
-load_dotenv()
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def init_supabase():
-    SUPABASE_URL = os.environ.get("SUPABASE_URL")
-    SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-    return create_client(SUPABASE_URL, SUPABASE_KEY)
+def save_to_supabase(st, sponsor_name, companions, total):
 
-def save_to_supabase(supabase: Client, st, sponsor_name, acompanhantes, person_names):
     try:
         data = {
             "sponsor_name": sponsor_name,
-            "total_convidados": acompanhantes + 1,
-            "person_names": person_names,
-            "env": os.environ.get("ENV"),
+            "companions": companions,
+            "total": total,
         }
         response = supabase.table("confirmations").insert(data).execute()
         if type(response.data[0]['id']) == int:
@@ -29,11 +23,11 @@ def save_to_supabase(supabase: Client, st, sponsor_name, acompanhantes, person_n
 
 # Function to get the total number of confirmed people
 def get_total_confirmed_people():
-    supabase = init_supabase()
+
     try:
         # Query the Supabase table
         response = supabase.table("confirmations") \
-            .select("id, total_convidados, env") \
+            .select("id, total, env") \
             .neq("env", "DEV") \
             .execute()
 
@@ -42,33 +36,33 @@ def get_total_confirmed_people():
             raise Exception(f"Error fetching data: {response.json()}")
 
         # Sum the total_convidados column
-        total_people = sum(row["total_convidados"] for row in response.data)
+        total_people = sum(row["total"] for row in response.data)
         return total_people
     except Exception as e:
         print(f"An error occurred: {e}")
         return 0
 
 # Function to get the total drinks
-def get_total_drinks():
-    supabase = init_supabase()
-    try:
-        # Query the Supabase table
-        response = supabase.table("confirmations") \
-            .select("id, bebidas, env") \
-            .neq("env", "DEV") \
-            .execute()
+# def get_total_drinks():
+#     supabase = init_supabase()
+#     try:
+#         # Query the Supabase table
+#         response = supabase.table("confirmations") \
+#             .select("id, bebidas, env") \
+#             .neq("env", "DEV") \
+#             .execute()
 
-        # Check for errors
-        if type(response.data[0]['id']) != int:
-            raise Exception(f"Error fetching data: {response.json()}")
+#         # Check for errors
+#         if type(response.data[0]['id']) != int:
+#             raise Exception(f"Error fetching data: {response.json()}")
 
-        # Sum the total_convidados column
-        # breakpoint()
-        # bebidas = [data['bebidas'] for data in response.data]
-        # return total_people
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return 0
+#         # Sum the total_convidados column
+#         # breakpoint()
+#         # bebidas = [data['bebidas'] for data in response.data]
+#         # return total_people
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
+#         return 0
 
 # if __name__== '__main__':
 #     get_total_confirmed_people()
