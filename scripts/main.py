@@ -8,17 +8,14 @@ def main():
 
     with st.form("confirmation_form"):
         # Sponsor's name
-        sponsor_name = st.text_input("Responsável pela confirmação:", placeholder="Preencha seu nome!", key="sponsor_name")
-
-        # Sponsor's email
-        sponsor_email = st.text_input("Email:", placeholder="Preencha seu e-mail.", key="sponsor_email")
+        sponsor_name = st.text_input("Convidado:", placeholder="Preencha seu nome!", key="sponsor_name")
 
         # Number of people
-        num_people = st.number_input("Acompanhantes:", min_value=0, step=1, key="num_people")
+        acompanhantes = st.number_input("Convidado(s) Acompanhante(s):", min_value=0, step=1, key="acompanhantes")
 
         # Dynamic fields for names based on the number of people
         person_names = []
-        for i in range(num_people):
+        for i in range(acompanhantes):
             name = st.text_input(f"Nome do {i + 1}° acompanhante:", placeholder=f"Nome da {i + 1}° acompanhante", key=f"person_{i}")
             person_names.append(name)
 
@@ -32,9 +29,9 @@ def main():
             elif any(not name.strip() for name in person_names):
                 st.error("Por favor, preencha todos os nomes.")
             else:
-                if save_to_supabase(supabase, st, sponsor_name, sponsor_email, num_people, person_names):
+                if save_to_supabase(supabase, st, sponsor_name, acompanhantes, person_names):
                     st.success(f"Obrigado pela sua confirmação {sponsor_name}!")
-                    if num_people > 0:
+                    if acompanhantes > 0:
                         st.write(f"**Acompanhantes:**")
                         for i, name in enumerate(person_names, start=1):
                             st.success(f"{i}. {name}")

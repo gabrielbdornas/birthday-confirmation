@@ -9,12 +9,11 @@ def init_supabase():
     SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
     return create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def save_to_supabase(supabase: Client, st, sponsor_name, sponsor_email, num_people, person_names):
+def save_to_supabase(supabase: Client, st, sponsor_name, acompanhantes, person_names):
     try:
         data = {
             "sponsor_name": sponsor_name,
-            "sponsor_email": sponsor_email,
-            "num_people": num_people,
+            "total_convidados": acompanhantes + 1,
             "person_names": person_names,
             "env": os.environ.get("ENV"),
         }
