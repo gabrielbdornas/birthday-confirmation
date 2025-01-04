@@ -26,3 +26,24 @@ def save_to_supabase(supabase: Client, st, sponsor_name, acompanhantes, person_n
     except Exception as e:
         st.error(f"Algum erro aconteceu: {e}")
         return False
+
+# Function to get the total number of confirmed people
+def get_total_confirmed_people():
+    supabase = init_supabase()
+    try:
+        # Query the Supabase table
+        response = supabase.table("confirmations") \
+            .select("id, total_convidados, env") \
+            .neq("env", "DEV") \
+            .execute()
+
+        # Check for errors
+        if type(response.data[0]['id']) != int:
+            raise Exception(f"Error fetching data: {response.json()}")
+
+        # Sum the total_convidados column
+        total_people = sum(row["total_convidados"] for row in response.data)
+        return total_people
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return 0
