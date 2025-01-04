@@ -2,7 +2,9 @@ import streamlit as st
 from supabase_conection import init_supabase, save_to_supabase
 
 def main():
-    st.title("Gabriel 40 Anos!")
+    st.title(":tada: Gabriel 40 Anos! :beers:")
+
+    st.write(f"**Confirme presença nesta festança**")
 
     supabase = init_supabase()
 
