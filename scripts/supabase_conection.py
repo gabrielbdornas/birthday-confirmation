@@ -47,3 +47,28 @@ def get_total_confirmed_people():
     except Exception as e:
         print(f"An error occurred: {e}")
         return 0
+
+# Function to get the total drinks
+def get_total_drinks():
+    supabase = init_supabase()
+    try:
+        # Query the Supabase table
+        response = supabase.table("confirmations") \
+            .select("id, bebidas, env") \
+            .neq("env", "DEV") \
+            .execute()
+
+        # Check for errors
+        if type(response.data[0]['id']) != int:
+            raise Exception(f"Error fetching data: {response.json()}")
+
+        # Sum the total_convidados column
+        # breakpoint()
+        # bebidas = [data['bebidas'] for data in response.data]
+        # return total_people
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return 0
+
+# if __name__== '__main__':
+#     get_total_confirmed_people()
