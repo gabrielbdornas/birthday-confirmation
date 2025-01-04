@@ -1,0 +1,21 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    - cron: '*/14 * * * *'  # Run every 10 minutes
+  workflow_dispatch:
+
+jobs:
+  keep_alive:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Send request to keep Render alive
+      run: |
+        curl -s -o /dev/null -w "%{http_code}" https://birthday-confirmation.onrender.com/
+    - name: Workflow failure notification
+      uses: JasonEtco/create-an-issue@v2
+      if: failure()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      with:
+        filename: .github/render_workflow_failure.md
