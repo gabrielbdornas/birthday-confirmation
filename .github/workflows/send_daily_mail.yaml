@@ -1,9 +1,9 @@
 name: Daily Supabase Confirmations Email
 
 on:
-  schedule:
-    # Runs every day at 9:00 AM UTC
-    - cron: "0 9 * * *"
+  # schedule:
+    # # Runs every day at 9:00 AM UTC
+    # - cron: "0 9 * * *"
   workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
